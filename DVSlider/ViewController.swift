@@ -12,14 +12,23 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        initWitFrame()
+    }
+    
+    private func initWitFrame(){
+        DVSliderManager.sharedInstance.titles = ["商品1","商品2","商品3","商品4"]
+        DVSliderManager.sharedInstance.delegateController=self
+        self.view .addSubview(DVSliderManager.sharedInstance.views)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+}
 
-
+extension ViewController: UITableViewDelegate {
+    
 }
 
