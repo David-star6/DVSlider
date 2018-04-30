@@ -16,7 +16,7 @@ class DVSliderView: UIScrollView {
     
     weak var slideDelegate: SlideDelegate?
     
-    var beginX: CGFloat?
+    var beginX: CGFloat = 0
     
     var itemCount: CGFloat?
     
@@ -24,11 +24,11 @@ class DVSliderView: UIScrollView {
     
     var directionLeft: Bool!
     
-    var delegateControllView:UIViewController?
+    var delegateControllView: UIViewController?
     
     var item : NSInteger!{
         didSet{
-         self.creatTableView()
+            self.creatTableView()
         }
     }
     
@@ -46,15 +46,17 @@ class DVSliderView: UIScrollView {
         fatalError("init(coder:) has not been implemented")
     }
     
-   private func creatTableView(){
-    self.itemCount = CGFloat(self.item)
-    for index in 0 ..< Int(self.item) {
-        let tableView = UITableView.init(frame: CGRect.init(x: self.frame.size.width  * CGFloat(index), y: 0, width: self.frame.size.width, height: self.frame.size.height))
-        tableView.backgroundColor = index == 1 ?  UIColor.gray : UIColor.gray;
-        tableView.delegate = delegateControllView as? UITableViewDelegate;
-        self.addSubview(tableView)
-    }
-    self.contentSize = CGSize.init(width:CGFloat(self.item) * self.frame.size.width, height: self.frame.size.height)
+    
+    private func creatTableView(){
+        self.itemCount = CGFloat(self.item)
+        for index in 0 ..< Int(self.item) {
+            let tableView = UITableView.init(frame: CGRect.init(x: self.frame.size.width  * CGFloat(index), y: 0, width: self.frame.size.width, height: self.frame.size.height))
+            tableView.backgroundColor = index == 1 ?  UIColor.gray : UIColor.gray
+            tableView.delegate = delegateControllView as? UITableViewDelegate
+            tableView.dataSource = delegateControllView  as? UITableViewDataSource
+            self.addSubview(tableView)
+        }
+        self.contentSize = CGSize.init(width:CGFloat(self.item) * self.frame.size.width, height: self.frame.size.height)
     }
     
     private func banScrollViewPanGesture(){
@@ -67,8 +69,8 @@ class DVSliderView: UIScrollView {
         })
     }
     
-     func scrollWihtNumber(number:Int){
-       self.setContentOffset(CGPoint.init(x: number * Int(self.frame.width), y: 0), animated: true)
+    func scrollWihtNumber(number:Int){
+        self.setContentOffset(CGPoint.init(x: number * Int(self.frame.width), y: 0), animated: true)
     }
 }
 
@@ -81,7 +83,7 @@ extension DVSliderView : UIScrollViewDelegate {
     }
     
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-    
+        
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -96,12 +98,11 @@ extension DVSliderView : UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetX = scrollView.contentOffset.x;
         if(!self.beginStatue){
-            directionLeft =  self.beginX! - scrollView.contentOffset.x > 0 ? true : false;
+            directionLeft =  self.beginX - scrollView.contentOffset.x > 0 ? true : false;
             self.beginStatue = true;
         }
-        if(offsetX < 0 && self.directionLeft){
-            self.banScrollViewPanGesture()
-        }
+        offsetX < 0 && self.directionLeft ? self.banScrollViewPanGesture() : nil
+        
         if self.slideDelegate != nil {
             let offsetX : CGFloat = scrollView.contentOffset.x/itemCount! + (CGFloat(DVSliderTool.screen_width/itemCount!)/2 - CGFloat(DVSliderTool.Item.lineWith/2));
             slideDelegate?.getScrollPostion(offsetX: offsetX)
