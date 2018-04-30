@@ -16,14 +16,15 @@ class DVSliderView: UIScrollView {
     
     weak var slideDelegate: SlideDelegate?
     
-    var currentScrollViewOfferX : CGFloat! = 0
-    
-    var scrollViewOfferX : CGFloat! = 0
-    
-    var isPanGestureEnabled : Bool! = true
+    var beginX: CGFloat?
     
     var itemCount: CGFloat?
     
+    var beginStatue: Bool = false
+    
+    var directionLeft: Bool!
+    
+    var delegateControllView:UIViewController?
     
     var item : NSInteger!{
         didSet{
@@ -31,7 +32,6 @@ class DVSliderView: UIScrollView {
         }
     }
     
-    var delegateView:UIViewController?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,15 +51,20 @@ class DVSliderView: UIScrollView {
     for index in 0 ..< Int(self.item) {
         let tableView = UITableView.init(frame: CGRect.init(x: self.frame.size.width  * CGFloat(index), y: 0, width: self.frame.size.width, height: self.frame.size.height))
         tableView.backgroundColor = index == 1 ?  UIColor.gray : UIColor.gray;
-//        tableView.delegate = delegateView as? UITableViewDelegate;
+        tableView.delegate = delegateControllView as? UITableViewDelegate;
         self.addSubview(tableView)
     }
     self.contentSize = CGSize.init(width:CGFloat(self.item) * self.frame.size.width, height: self.frame.size.height)
     }
     
-    private func banScrollViewPanGesture(bools:Bool){
-        self.isPanGestureEnabled = bools
-        self.panGestureRecognizer.isEnabled = bools
+    private func banScrollViewPanGesture(){
+        self.panGestureRecognizer.isEnabled = false
+        UIView.animate(withDuration: 0.25, animations: {
+            self.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
+        }, completion: { (_) in
+            self.panGestureRecognizer.isEnabled = true
+            self.beginStatue = false;
+        })
     }
     
      func scrollWihtNumber(number:Int){
@@ -69,33 +74,38 @@ class DVSliderView: UIScrollView {
 
 extension DVSliderView : UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-  
+        beginX = scrollView.contentOffset.x
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        !self.isPanGestureEnabled ? self.banScrollViewPanGesture(bools:true) : nil
     }
     
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
     
     }
     
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.beginStatue = false;
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    }
+    
+    
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        currentScrollViewOfferX = scrollView.contentOffset.x
-//        if currentScrollViewOfferX > scrollViewOfferX {
-//
-//            currentScrollViewOfferX + self.frame.size.width  > scrollView.contentSize.width ? (self.banScrollViewPanGesture(bools: false)) : nil
-//
-//        } else if(currentScrollViewOfferX < scrollViewOfferX){
-//
-//            currentScrollViewOfferX < 0  ? (self.banScrollViewPanGesture(bools: false)) : nil
-//        }
-        
+        let offsetX = scrollView.contentOffset.x;
+        if(!self.beginStatue){
+            directionLeft =  self.beginX! - scrollView.contentOffset.x > 0 ? true : false;
+            self.beginStatue = true;
+        }
+        if(offsetX < 0 && self.directionLeft){
+            self.banScrollViewPanGesture()
+        }
         if self.slideDelegate != nil {
             let offsetX : CGFloat = scrollView.contentOffset.x/itemCount! + (CGFloat(DVSliderTool.screen_width/itemCount!)/2 - CGFloat(DVSliderTool.Item.lineWith/2));
             slideDelegate?.getScrollPostion(offsetX: offsetX)
         }
-        scrollViewOfferX = currentScrollViewOfferX
     }
     
 }

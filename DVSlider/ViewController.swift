@@ -16,7 +16,7 @@ class ViewController: UIViewController {
     }
     
     private func initWitFrame(){
-        DVSliderManager.sharedInstance.titles = ["商品1","商品2","商品3","商品4"]
+        DVSliderManager.sharedInstance.titles = ["商品1","商品2","商品3"]
         DVSliderManager.sharedInstance.delegateController=self
         self.view .addSubview(DVSliderManager.sharedInstance.views)
     }

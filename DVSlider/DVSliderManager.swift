@@ -18,7 +18,7 @@ class DVSliderManager: NSObject {
     
     lazy var views : UIView = {
         var views = UIView.init(frame: CGRect.init(x: 0, y: 0, width: DVSliderTool.screen_width, height: DVSliderTool.screen_height))
-        sliderView.delegateView = delegateController
+        sliderView.delegateControllView = delegateController
         sliderView.slideDelegate = self;
         views.addSubview(sliderView)
         views.addSubview(sliderNavBar)
@@ -27,7 +27,7 @@ class DVSliderManager: NSObject {
     
     lazy var sliderView : DVSliderView = {
         var slider = DVSliderView()
-        slider.frame = CGRect.init(x: 0, y: 60, width: DVSliderTool.screen_width, height: DVSliderTool.screen_height-60)
+        slider.frame = CGRect.init(x: 0, y: CGFloat(DVSliderTool.Item.height), width: DVSliderTool.screen_width, height: DVSliderTool.screen_height-CGFloat(DVSliderTool.Item.height))
         slider.item = self.titles?.count;
         return slider
     }()
@@ -36,12 +36,12 @@ class DVSliderManager: NSObject {
         var sliderNav = DVSilderNavBar.init(frame: CGRect.init(x: 0, y: 0, width: DVSliderTool.screen_width, height: 60))
         sliderNav.titles = self.titles
         sliderNav.getCallBack={(result) -> Void in
-            self.itemWithClick(number:result)
+            self.clickItem(number:result)
         }
         return sliderNav
     }()
     
-    private func itemWithClick(number:Int){
+    private func clickItem(number:Int){
         self.sliderView.scrollWihtNumber(number: number)
     }
     
