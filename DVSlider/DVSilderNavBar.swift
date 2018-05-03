@@ -28,6 +28,8 @@ class DVSilderNavBar: UIScrollView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.showsVerticalScrollIndicator = false
+        self.showsHorizontalScrollIndicator = false
         self.backgroundColor = DVSliderTool.Colors.normalColor
         self.addSubview(indicateLine)
     }
@@ -41,8 +43,11 @@ class DVSilderNavBar: UIScrollView {
     }
     
     private func initWithCreatItem(){
-        let itemWidth = Int(Int(DVSliderTool.screen_width)/self.titles!.count)
-        self.indicateLine.frame = CGRect.init(origin: CGPoint.init(x:(CGFloat(DVSliderTool.screen_width) / CGFloat(self.titles!.count))/2 - CGFloat(DVSliderTool.Item.lineWith/2), y: 59), size: CGSize.init(width: DVSliderTool.Item.height, height: 2))
+        let number = DVSliderTool.Item.maxNumber < self.titles!.count ? DVSliderTool.Item.maxNumber : self.titles!.count
+        let itemWidth = Int(Int(DVSliderTool.screen_width)/number)
+        let contentWidth = CGFloat(self.titles!.count) * CGFloat(itemWidth) > self.frame.size.width ?  CGFloat(self.titles!.count) * CGFloat(itemWidth) : self.frame.size.width
+        self.contentSize = CGSize.init(width: contentWidth, height: self.frame.size.height)
+        self.indicateLine.frame = CGRect.init(origin: CGPoint.init(x:(CGFloat(DVSliderTool.screen_width) / CGFloat(number))/2 - CGFloat(DVSliderTool.Item.lineWith/2), y: 59), size: CGSize.init(width: DVSliderTool.Item.height, height: 2))
                     self.addSubview(indicateLine)
         for index in 0..<self.titles!.count {
             let item = DVSliderNavBarItem.init(frame: CGRect.init(x: itemWidth*index, y: 0, width: itemWidth, height:  DVSliderTool.Item.height))
@@ -53,11 +58,30 @@ class DVSilderNavBar: UIScrollView {
         }
     }
     
+    func clickItemWithTag(tag:NSInteger){
+        let button = self.viewWithTag(tag + DVSliderTool.Item.itemTag)
+        self.scrollItemWithButton(item: button as! UIButton)
+    }
+    
+    private func scrollItemWithButton(item:UIButton){
+        if (item.tag - 2 <=  DVSliderTool.Item.itemTag) {
+            self.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
+        }else if (item.tag + 2 >= (self.titles?.count)! + DVSliderTool.Item.itemTag){
+            
+            let sender : UIButton = self.viewWithTag(((self.titles?.count)!/2 + (self.titles?.count)!%2)  +  DVSliderTool.Item.itemTag) as! UIButton
+            self.setContentOffset(CGPoint.init(x: sender.frame.origin.x - sender.frame.size.width, y: 0), animated: true)
+        }else{
+            let sender = self.viewWithTag(item.tag-2)
+            self.setContentOffset(CGPoint.init(x: Int((sender?.frame.origin.x)! + item.frame.size.width/2), y: 0), animated: true)
+        }
+    }
+    
 }
 
 
 extension DVSilderNavBar: DVSliderNavBarItemDelegate{
     func itemHandleWithTap(item: UIButton) {
+        self.scrollItemWithButton(item: item)
         getCallBack!(item.tag - DVSliderTool.Item.itemTag)
     }
 }

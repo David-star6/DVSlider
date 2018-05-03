@@ -8,8 +8,14 @@
 
 import UIKit
 
+struct directions {
+   static let right = 1
+   static let left = 2
+}
+
 protocol SlideDelegate:NSObjectProtocol {
     func getScrollPostion(offsetX:CGFloat)
+    func endScrollPostion(page:NSInteger,direction:Int)
 }
 
 class DVSliderView: UIScrollView {
@@ -48,12 +54,13 @@ class DVSliderView: UIScrollView {
     
     
     private func creatTableView(){
-        self.itemCount = CGFloat(self.item)
+        self.itemCount = DVSliderTool.Item.maxNumber > self.item ?  CGFloat(self.item) : CGFloat(DVSliderTool.Item.maxNumber)
         for index in 0 ..< Int(self.item) {
             let tableView = UITableView.init(frame: CGRect.init(x: self.frame.size.width  * CGFloat(index), y: 0, width: self.frame.size.width, height: self.frame.size.height))
             tableView.backgroundColor = index == 1 ?  UIColor.gray : UIColor.gray
             tableView.delegate = delegateControllView as? UITableViewDelegate
             tableView.dataSource = delegateControllView  as? UITableViewDataSource
+            tableView.isUserInteractionEnabled = false
             self.addSubview(tableView)
         }
         self.contentSize = CGSize.init(width:CGFloat(self.item) * self.frame.size.width, height: self.frame.size.height)
@@ -83,17 +90,22 @@ extension DVSliderView : UIScrollViewDelegate {
     }
     
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        
+     
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.beginStatue = false;
+        if(beginX ==  scrollView.contentOffset.x) {
+            return
+        }
+        if self.slideDelegate != nil{
+            slideDelegate?.endScrollPostion(page:NSInteger(scrollView.contentOffset.x/self.frame.size.width),direction: beginX < scrollView.contentOffset.x ? directions.right : directions.left )
+        }
     }
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        
     }
-    
-    
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetX = scrollView.contentOffset.x;
@@ -102,7 +114,6 @@ extension DVSliderView : UIScrollViewDelegate {
             self.beginStatue = true;
         }
         offsetX < 0 && self.directionLeft ? self.banScrollViewPanGesture() : nil
-        
         if self.slideDelegate != nil {
             let offsetX : CGFloat = scrollView.contentOffset.x/itemCount! + (CGFloat(DVSliderTool.screen_width/itemCount!)/2 - CGFloat(DVSliderTool.Item.lineWith/2));
             slideDelegate?.getScrollPostion(offsetX: offsetX)

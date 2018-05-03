@@ -25,6 +25,7 @@ class DVSliderTool: NSObject {
         static let itemTag = 100
         static let height = 60
         static let lineWith = 60
+        static let maxNumber = 4
     }
     
 }

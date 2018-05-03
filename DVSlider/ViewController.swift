@@ -18,16 +18,11 @@ class ViewController: UIViewController {
     }
     
     private func initWitFrame(){
-        let tableview = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: 100, height: 700))
-        tableview.delegate = self;
-        tableview.dataSource = self;
-        DVSliderManager.sharedInstance.creatSlideView(vc:self,title:["商品1","商品2","商品3"])
-        //        self.view.addSubview(tableview)
+        DVSliderManager.sharedInstance.creatSlideView(vc:self,title:["商品1","商品2","商品3","商品4","商品5","商品6"])
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
 }
@@ -53,9 +48,9 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         return cell!
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("你选中了" )
-    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        print("你选中了" )
+//    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 90

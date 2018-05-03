@@ -58,9 +58,16 @@ class DVSliderManager: NSObject {
 }
 
 extension DVSliderManager : SlideDelegate{
+    
+    func endScrollPostion(page: NSInteger, direction: Int) {
+        self.sliderNavBar.clickItemWithTag(tag:page)
+    }
+    
+    
     func getScrollPostion(offsetX: CGFloat) {
         self.sliderNavBar.indicateLine.frame = CGRect.init(origin: CGPoint.init(x: offsetX, y: self.sliderNavBar.indicateLine.frame.origin.y), size: self.sliderNavBar.indicateLine.frame.size)
     }
+    
 }
 
 
