@@ -48,7 +48,7 @@ class DVSilderNavBar: UIScrollView {
         let itemWidth = Int(Int(DVSliderTool.screen_width)/number)
         let contentWidth = CGFloat(self.titles!.count) * CGFloat(itemWidth) > self.frame.size.width ?  CGFloat(self.titles!.count) * CGFloat(itemWidth) : self.frame.size.width
         self.contentSize = CGSize.init(width: contentWidth, height: self.frame.size.height)
-        self.indicateLine.frame = CGRect.init(origin: CGPoint.init(x:(CGFloat(DVSliderTool.screen_width) / CGFloat(number))/2 - CGFloat(DVSliderTool.Item.lineWith/2), y: 59), size: CGSize.init(width: DVSliderTool.Item.height, height: 2))
+        self.indicateLine.frame = CGRect.init(origin: CGPoint.init(x:(CGFloat(DVSliderTool.screen_width) / CGFloat(number))/2 - CGFloat(DVSliderTool.Item.lineWith/2), y: 59), size: CGSize.init(width: DVSliderTool.Item.lineWith, height: 2))
                     self.addSubview(indicateLine)
         for index in 0..<self.titles!.count {
             let item = DVSliderNavBarItem.init(frame: CGRect.init(x: itemWidth*index, y: 0, width: itemWidth, height:  DVSliderTool.Item.height))
@@ -67,7 +67,7 @@ class DVSilderNavBar: UIScrollView {
     
     /*导航按钮点击选中后的滑动效果*/
     private func scrollItemWithButton(item:UIButton){
-        if (item.tag - 2 <=  DVSliderTool.Item.itemTag) {
+        if (item.tag - 2 <= DVSliderTool.Item.itemTag) {
             self.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
         }else if (item.tag + 2 >= (self.titles?.count)! + DVSliderTool.Item.itemTag){
             

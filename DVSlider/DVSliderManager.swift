@@ -44,6 +44,12 @@ class DVSliderManager: NSObject {
         return sliderNav
     }()
     
+    /*获取每个tableview*/
+    func getScrollTabeleView(tableView:(UITableView)->(Void)){
+        for view in self.sliderView.tableviewArr!{
+            tableView(view as! UITableView)
+        }
+    }
     func creatSlideView(vc:UIViewController,title:NSArray){
         self.titles = title
         self.delegateController = vc

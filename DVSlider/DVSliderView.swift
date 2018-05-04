@@ -32,6 +32,8 @@ class DVSliderView: UIScrollView {
     
     var delegateControllView: UIViewController?
     
+    var tableviewArr: NSMutableArray? = NSMutableArray.init()
+    
     var item : NSInteger!{
         didSet{
             self.creatTableView()
@@ -60,6 +62,7 @@ class DVSliderView: UIScrollView {
             tableView.delegate = delegateControllView as? UITableViewDelegate
             tableView.dataSource = delegateControllView  as? UITableViewDataSource
             tableView.isUserInteractionEnabled = false
+            self.tableviewArr?.add(tableView)
             self.addSubview(tableView)
         }
         self.contentSize = CGSize.init(width:CGFloat(self.item) * self.frame.size.width, height: self.frame.size.height)

@@ -19,6 +19,11 @@ class ViewController: UIViewController {
     
     private func initWitFrame(){
         DVSliderManager.sharedInstance.creatSlideView(vc:self,title:["商品1","商品2","商品3","商品4","商品5","商品6"])
+        DVSliderManager.sharedInstance.getScrollTabeleView { (tableview) -> (Void) in
+            tableview.isUserInteractionEnabled = true
+            tableview.backgroundColor = UIColor.white
+            tableview.separatorStyle = UITableViewCellSeparatorStyle.none
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -47,10 +52,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         cell?.backgroundColor = UIColor.gray
         return cell!
     }
-    
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print("你选中了" )
-//    }
+
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 90
