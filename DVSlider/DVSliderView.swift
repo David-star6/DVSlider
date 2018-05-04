@@ -38,7 +38,6 @@ class DVSliderView: UIScrollView {
         }
     }
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.showsVerticalScrollIndicator = false
@@ -52,7 +51,7 @@ class DVSliderView: UIScrollView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+    /*创建每个tableview*/
     private func creatTableView(){
         self.itemCount = DVSliderTool.Item.maxNumber > self.item ?  CGFloat(self.item) : CGFloat(DVSliderTool.Item.maxNumber)
         for index in 0 ..< Int(self.item) {
@@ -66,6 +65,7 @@ class DVSliderView: UIScrollView {
         self.contentSize = CGSize.init(width:CGFloat(self.item) * self.frame.size.width, height: self.frame.size.height)
     }
     
+    /*向右禁止滑动*/
     private func banScrollViewPanGesture(){
         self.panGestureRecognizer.isEnabled = false
         UIView.animate(withDuration: 0.25, animations: {
@@ -95,9 +95,7 @@ extension DVSliderView : UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.beginStatue = false;
-        if(beginX ==  scrollView.contentOffset.x) {
-            return
-        }
+        if(beginX == scrollView.contentOffset.x) {return}
         if self.slideDelegate != nil{
             slideDelegate?.endScrollPostion(page:NSInteger(scrollView.contentOffset.x/self.frame.size.width),direction: beginX < scrollView.contentOffset.x ? directions.right : directions.left )
         }
@@ -110,7 +108,7 @@ extension DVSliderView : UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetX = scrollView.contentOffset.x;
         if(!self.beginStatue){
-            directionLeft =  self.beginX - scrollView.contentOffset.x > 0 ? true : false;
+            directionLeft = self.beginX - scrollView.contentOffset.x > 0 ? true : false;
             self.beginStatue = true;
         }
         offsetX < 0 && self.directionLeft ? self.banScrollViewPanGesture() : nil

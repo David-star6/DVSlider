@@ -16,6 +16,7 @@ class DVSliderManager: NSObject {
     
     var delegateController : UIViewController?
     
+    /*滑动视图*/
     lazy var views : UIView = {
         var views = UIView.init(frame: CGRect.init(x: 0, y: 0, width: DVSliderTool.screen_width, height: DVSliderTool.screen_height))
         views.addSubview(sliderView)
@@ -23,6 +24,7 @@ class DVSliderManager: NSObject {
         return views;
     }()
     
+    /*滑动内容栏*/
     lazy var sliderView : DVSliderView = {
         var slider = DVSliderView()
         slider.frame = CGRect.init(x: 0, y: CGFloat(DVSliderTool.Item.height), width: DVSliderTool.screen_width, height: DVSliderTool.screen_height-CGFloat(DVSliderTool.Item.height))
@@ -32,6 +34,7 @@ class DVSliderManager: NSObject {
         return slider
     }()
     
+    /*滑动导航栏*/
     lazy var sliderNavBar : DVSilderNavBar = {
         var sliderNav = DVSilderNavBar.init(frame: CGRect.init(x: 0, y: 0, width: DVSliderTool.screen_width, height: 60))
         sliderNav.titles = self.titles
@@ -57,12 +60,13 @@ class DVSliderManager: NSObject {
     
 }
 
+
+/*DVSliderView滑动后产生的回调*/
 extension DVSliderManager : SlideDelegate{
     
     func endScrollPostion(page: NSInteger, direction: Int) {
         self.sliderNavBar.clickItemWithTag(tag:page)
     }
-    
     
     func getScrollPostion(offsetX: CGFloat) {
         self.sliderNavBar.indicateLine.frame = CGRect.init(origin: CGPoint.init(x: offsetX, y: self.sliderNavBar.indicateLine.frame.origin.y), size: self.sliderNavBar.indicateLine.frame.size)

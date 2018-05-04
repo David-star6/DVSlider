@@ -19,7 +19,7 @@ class DVSilderNavBar: UIScrollView {
     
     var getCallBack:((Int)->(Void))?
     
-    
+    /*下划线滑动条*/
     lazy var indicateLine : UILabel  = {
        var line = UILabel.init()
         line.backgroundColor = DVSliderTool.Colors.indicateColor
@@ -42,6 +42,7 @@ class DVSilderNavBar: UIScrollView {
        
     }
     
+    /*创建每个每个导航title*/
     private func initWithCreatItem(){
         let number = DVSliderTool.Item.maxNumber < self.titles!.count ? DVSliderTool.Item.maxNumber : self.titles!.count
         let itemWidth = Int(Int(DVSliderTool.screen_width)/number)
@@ -58,11 +59,13 @@ class DVSilderNavBar: UIScrollView {
         }
     }
     
+    /*根据tag判断滑动后选中的导航按钮*/
     func clickItemWithTag(tag:NSInteger){
         let button = self.viewWithTag(tag + DVSliderTool.Item.itemTag)
         self.scrollItemWithButton(item: button as! UIButton)
     }
     
+    /*导航按钮点击选中后的滑动效果*/
     private func scrollItemWithButton(item:UIButton){
         if (item.tag - 2 <=  DVSliderTool.Item.itemTag) {
             self.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
@@ -78,7 +81,7 @@ class DVSilderNavBar: UIScrollView {
     
 }
 
-
+/*导航按钮点击后的方法*/
 extension DVSilderNavBar: DVSliderNavBarItemDelegate{
     func itemHandleWithTap(item: UIButton) {
         self.scrollItemWithButton(item: item)
