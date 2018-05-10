@@ -14,7 +14,7 @@ struct directions {
 }
 
 protocol SlideDelegate:NSObjectProtocol {
-    func getScrollPostion(offsetX:CGFloat)
+    func getScrollPostion(offsetX:CGFloat,isLeft:Bool)
     func endScrollPostion(page:NSInteger,direction:Int)
 }
 
@@ -58,10 +58,9 @@ class DVSliderView: UIScrollView {
         self.itemCount = DVSliderTool.Item.maxNumber > self.item ?  CGFloat(self.item) : CGFloat(DVSliderTool.Item.maxNumber)
         for index in 0 ..< Int(self.item) {
             let tableView = UITableView.init(frame: CGRect.init(x: self.frame.size.width  * CGFloat(index), y: 0, width: self.frame.size.width, height: self.frame.size.height))
-            tableView.backgroundColor = index == 1 ?  UIColor.gray : UIColor.gray
+            tableView.backgroundColor =  DVSliderTool.Colors.defaultColor
             tableView.delegate = delegateControllView as? UITableViewDelegate
             tableView.dataSource = delegateControllView  as? UITableViewDataSource
-            tableView.isUserInteractionEnabled = false
             self.tableviewArr?.add(tableView)
             self.addSubview(tableView)
         }
@@ -111,13 +110,13 @@ extension DVSliderView : UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetX = scrollView.contentOffset.x;
         if(!self.beginStatue){
-            directionLeft = self.beginX - scrollView.contentOffset.x > 0 ? true : false;
+            self.directionLeft = self.beginX - scrollView.contentOffset.x > 0 ? true : false;
             self.beginStatue = true;
         }
         offsetX < 0 && self.directionLeft ? self.banScrollViewPanGesture() : nil
         if self.slideDelegate != nil {
             let offsetX : CGFloat = scrollView.contentOffset.x/itemCount! + (CGFloat(DVSliderTool.screen_width/itemCount!)/2 - CGFloat(DVSliderTool.Item.lineWith/2));
-            slideDelegate?.getScrollPostion(offsetX: offsetX)
+            slideDelegate?.getScrollPostion(offsetX: offsetX, isLeft: self.directionLeft)
         }
     }
     

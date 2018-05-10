@@ -17,11 +17,11 @@ class DVSliderManager: NSObject {
     var delegateController : UIViewController?
     
     /*滑动视图*/
-    lazy var views : UIView = {
-        var views = UIView.init(frame: CGRect.init(x: 0, y: 0, width: DVSliderTool.screen_width, height: DVSliderTool.screen_height))
+    lazy var views : UIScrollView = {
+        var views = UIScrollView.init(frame: CGRect.init(x: 0, y: 0, width: DVSliderTool.screen_width, height: DVSliderTool.screen_height))
         views.addSubview(sliderView)
         views.addSubview(sliderNavBar)
-        return views;
+        return views
     }()
     
     /*滑动内容栏*/
@@ -50,10 +50,12 @@ class DVSliderManager: NSObject {
             tableView(view as! UITableView)
         }
     }
+    
     func creatSlideView(vc:UIViewController,title:NSArray){
         self.titles = title
         self.delegateController = vc
         vc.view.addSubview(self.views)
+        self.views.addObserver(self, forKeyPath: "contentOffset", options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     private func clickItem(number:Int){
@@ -64,19 +66,33 @@ class DVSliderManager: NSObject {
         
     }
     
+    /*适配各种机型tableview内容大小*/
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "contentOffset" {
+            self.getScrollTabeleView(tableView: { (table) -> (Void) in
+                table.contentInset = UIEdgeInsets.init(top: 0, left: 0, bottom: abs(views.contentOffset.y), right: 0)
+            })
+        }
+    }
+    
+    /*移除操作*/
+    func dismiss() {
+        self.views.removeObserver(self, forKeyPath: "contentOffset", context: nil)
+    }
 }
 
 
 /*DVSliderView滑动后产生的回调*/
 extension DVSliderManager : SlideDelegate{
+    func getScrollPostion(offsetX: CGFloat, isLeft: Bool) {
+        self.sliderNavBar.scrollWithoffsetX(offsetX: offsetX,isLeft: isLeft)
+
+    }
     
     func endScrollPostion(page: NSInteger, direction: Int) {
         self.sliderNavBar.clickItemWithTag(tag:page)
     }
     
-    func getScrollPostion(offsetX: CGFloat) {
-        self.sliderNavBar.indicateLine.frame = CGRect.init(origin: CGPoint.init(x: offsetX, y: self.sliderNavBar.indicateLine.frame.origin.y), size: self.sliderNavBar.indicateLine.frame.size)
-    }
     
 }
 

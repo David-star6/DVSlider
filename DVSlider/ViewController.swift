@@ -10,10 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var dataSource = ["title","title2","title2","title2","title2","title2"]
+    var dataSource = ["title","title2","title2","title2","title2","title2","title2"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "导航控制器"
         initWitFrame()
     }
     
@@ -24,6 +25,11 @@ class ViewController: UIViewController {
             tableview.backgroundColor = UIColor.white
             tableview.separatorStyle = UITableViewCellSeparatorStyle.none
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+         DVSliderManager.sharedInstance.dismiss()
     }
     
     override func didReceiveMemoryWarning() {
@@ -49,7 +55,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
             cell=UITableViewCell(style: UITableViewCellStyle.default
                 , reuseIdentifier: iderntify);}
         cell?.textLabel?.text = self.dataSource[indexPath.section]
-        cell?.backgroundColor = UIColor.gray
+        cell?.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
         return cell!
     }
 
